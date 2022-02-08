@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <input id="freq_range" type="range" min="0" max="7" step="1" value="0">
+    <button id="play_stop_btn">play/stop</button>
+    <script>
+        function freq12(a, n) {
+            return a * Math.pow(2, n / 12.0);
+        }
+        const f0 = freq12(1000, 3);
+        const majScale = [0, 2, 4, 5, 7, 9, 11, 12];
+        const freq_list = majScale.map(n => freq12(f0, n));
+
+        const audioContext = new AudioContext();
+        const oscillatorNode = audioContext.createOscillator();
+        oscillatorNode.frequency.value = f0;
+        oscillatorNode.connect(audioContext.destination);
+        oscillatorNode.start();
+
+document.getElementById('play_stop_btn')
+  .addEventListener('click', function() {
+      if(audioContext.state === 'suspended'){
+          audioContext.resume();
+      } else {
+          audioContext.suspend();
+      }
+  }, false);
+  
+document.getElementById('freq_range')
+.addEventListener('input', function() {
+     let i = parseInt(this.value);
+     oscillatorNode.frequency.value = freq_list[i];
+  });
+    </script>
+  </body>
+</html>
